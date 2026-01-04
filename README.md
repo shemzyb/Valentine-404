@@ -41,6 +41,25 @@
     display: none;
   }
 
+  .spotify-btn {
+    display: none;
+    margin: 20px auto;
+    padding: 12px 22px;
+    background: #1db954;
+    color: white;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    text-decoration: none;
+    width: fit-content;
+    box-shadow: 0 8px 20px rgba(29,185,84,0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .spotify-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 28px rgba(29,185,84,0.6);
+  }
+
   button {
     padding: 15px 30px;
     font-size: 1.1rem;
@@ -108,16 +127,21 @@ Only <strong>Seunmi</strong> (aka <strong>Preciousgift</strong>) can fix this er
 <input id="nameInput" placeholder="Enter your name" />
 <div class="error" id="errorMsg">Wrong name 😌 Try again.</div>
 
+<a
+  id="spotifyBtn"
+  class="spotify-btn"
+  href="https://open.spotify.com/playlist/4DbftWuQLJpks6LLT0Orjx"
+  target="_blank"
+>
+  🎧 Press play while reading 😌
+</a>
+
 <p id="countdown"></p>
 
 <div class="container">
   <button id="yesBtn">YES ❤️</button>
   <button id="noBtn">NO</button>
 </div>
-
-<audio id="music" loop>
-  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c1c6b5c7e5.mp3?filename=african-love-110624.mp3" type="audio/mpeg">
-</audio>
 
 <canvas id="confetti"></canvas>
 
@@ -127,15 +151,25 @@ Only <strong>Seunmi</strong> (aka <strong>Preciousgift</strong>) can fix this er
   const error = document.getElementById("errorMsg");
   const yesBtn = document.getElementById("yesBtn");
   const noBtn = document.getElementById("noBtn");
-  const music = document.getElementById("music");
+  const spotifyBtn = document.getElementById("spotifyBtn");
 
   let yesScale = 1;
 
-  // Auto-fill from shareable link
+  // Shareable link auto-fill
   const params = new URLSearchParams(window.location.search);
   if (params.get("name")) {
     input.value = params.get("name");
   }
+
+  // Unlock Spotify only for correct name
+  input.addEventListener("input", () => {
+    if (input.value.trim().toLowerCase() === correctName) {
+      spotifyBtn.style.display = "inline-block";
+      error.style.display = "none";
+    } else {
+      spotifyBtn.style.display = "none";
+    }
+  });
 
   function moveNo() {
     navigator.vibrate?.(30);
@@ -155,7 +189,6 @@ Only <strong>Seunmi</strong> (aka <strong>Preciousgift</strong>) can fix this er
       return;
     }
 
-    music.play();
     launchConfetti();
 
     document.body.innerHTML = `
@@ -168,7 +201,7 @@ Only <strong>Seunmi</strong> (aka <strong>Preciousgift</strong>) can fix this er
     `;
   });
 
-  // Hearts
+  // Floating hearts
   setInterval(() => {
     const h = document.createElement("div");
     h.className = "heart";
